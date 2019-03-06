@@ -10,11 +10,11 @@
 	,push/1
         ,push_determination/3
 	]).
--record(undeliveredmsg,{messageid,clientid,topic,message,accountid,f1,f2,f3,f4,f5}).
--record(userinformation,{topic,faviourategroup,last_seen,f1,f2,f3,f4,f5}).
--record(pushnotification,{deviceid,topic,devicetype,f1,f2,f3,f4,f5}).
--record(storemessage,{messageid,topic,datetime,message,accountid,from,groupid,status,f1,f2,f3,f4,f5}).
--record(group,{groupid,memberslist,groupadmin,owner,notificationrestriction,groupname,f1,f2,f3,f4,f5}).
+-record(undeliveredmsg,{messageid,clientid,topic,message,accountid,field1,field2,field3,field4,field5}).
+-record(userinformation,{topic,faviourategroup,last_seen,field1,field2,field3,field4,field5}).
+-record(pushnotification,{deviceid,topic,devicetype,field1,field2,field3,field4,field5}).
+-record(storemessage,{messageid,topic,datetime,message,accountid,from,groupid,status,field1,field2,field3,field4,field5}).
+-record(group,{groupid,memberslist,groupadmin,owner,notificationrestriction,groupname,field1,field2,field3,field4,field5}).
 -define(groupinstruction,[<<"group_name_change">>
 	                     ,<<"@_message">>
 	                     ,<<"off_notify_with_smart_notify">>
@@ -34,32 +34,32 @@ init() ->
   	                 ,[{disc_copies
   	                   ,[node()]}
   	                   ,{attributes,record_info(fields,undeliveredmsg)}
-  	                   ,{index,[clientid,topic,message,accountid,f1,f2,f3,f4,f5]}
+  	                   ,{index,[clientid,topic,message,accountid,field1,field2,field3,field4,field5]}
   	                  ]),
   mnesia:create_table(userinformation
   	                 ,[{disc_copies
   	                   ,[node()]}
   	                   ,{attributes,record_info(fields,userinformation)}
-  	                   ,{index,[faviourategroup,last_seen,f1,f2,f3,f4,f5]}
+  	                   ,{index,[faviourategroup,last_seen,field1,field2,field3,field4,field5]}
   	                  ]),
   mnesia:create_table(pushnotification
   	                 ,[{disc_copies
   	                   ,[node()]}
   	                   ,{attributes,record_info(fields,pushnotification)}
-  	                   ,{index,[topic,devicetype,f1,f2,f3,f4,f5]}
+  	                   ,{index,[topic,devicetype,field1,field2,field3,field4,field5]}
   	                  ]),
   mnesia:create_table(storemessage
   	                 ,[{disc_copies
   	                   ,[node()]}
   	                   ,{attributes,record_info(fields,storemessage)}
-  	                   ,{index,[topic,datetime,message,accountid,from,groupid,f1,f2,f3,f4,f5]}
+  	                   ,{index,[topic,datetime,message,accountid,from,groupid,field1,field2,field3,field4,field5]}
   	                  ]),
 
   mnesia:create_table(group
   	                 ,[{disc_copies
   	                   ,[node()]}
   	                   ,{attributes,record_info(fields,group)}
-  	                   ,{index,[memberslist,groupadmin,owner,notificationrestriction,groupname,f1,f2,f3,f4,f5]}
+  	                   ,{index,[memberslist,groupadmin,owner,notificationrestriction,groupname,field1,field2,field3,field4,field5]}
   	                  ]).
 
 % when publish hook called
