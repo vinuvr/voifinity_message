@@ -27,7 +27,7 @@
 	                     ]).
 
 init() ->
-  %
+  %%
   mnesia:create_schema([node()]),
   mnesia:start(),
   mnesia:create_table(undeliveredmsg
