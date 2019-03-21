@@ -44,7 +44,7 @@ on_client_disconnected(#{client_id := ClientId}, ReasonCode, _Env) ->
     io:format("Client(~s) disconnected, reason_code: ~w~n", [ClientId, ReasonCode]).
 on_client_subscribe(#{client_id := ClientId}, RawTopicFilters, _Env) ->
     io:format("Client(~s) will subscribe: ~p", [ClientId, RawTopicFilters]),
-    voifinity_message_action:recv(ClientId,element(1,hd(RawTopicFilters))),   
+%   voifinity_message_action:recv(ClientId,element(1,hd(RawTopicFilters))),   
     {ok,RawTopicFilters}.
 on_client_unsubscribe(#{client_id := ClientId}, RawTopicFilters, _Env) ->
     io:format("Client(~s) unsubscribe ~p~n", [ClientId, RawTopicFilters]),
@@ -54,8 +54,8 @@ on_session_created(#{client_id := ClientId}, SessAttrs, _Env) ->
 on_session_resumed(#{client_id := ClientId}, SessAttrs, _Env) ->
     io:format("Session(~s) resumed: ~p~n", [ClientId, SessAttrs]).
 on_session_subscribed(#{client_id := ClientId}, Topic, SubOpts, _Env) ->
-    io:format("Session(~s) subscribe ~s with subopts: ~p~n", [ClientId, Topic, SubOpts]),
-    voifinity_message_action:recv(clientId,Topic).
+    io:format("Session(~s) subscribe ~s with subopts: ~p~n", [ClientId, Topic, SubOpts]).
+    %voifinity_message_action:recv(clientId,Topic).
 on_session_unsubscribed(#{client_id := ClientId}, Topic, Opts, _Env) ->
     io:format("Session(~s) unsubscribe ~s with opts: ~p~n", [ClientId, Topic, Opts]).
 on_session_terminated(#{client_id := ClientId}, ReasonCode, _Env) ->
@@ -68,18 +68,20 @@ on_message_publish(Message, _Env) ->
     {ok, Message}.
 on_message_delivered(#{client_id := ClientId}, Message, _Env) ->
     io:format("Delivered message to client(~s): ~s~n", [ClientId, emqx_message:format(Message)]),
-    voifinity_message_action:on_delivered(ClientId,Message),
+   % voifinity_message_action:on_delivered(ClientId,Message),
     {ok, Message}.
 on_message_acked(#{client_id := ClientId}, Message, _Env) ->
     io:format("Session(~s) acked message: ~s~n", [ClientId, emqx_message:format(Message)]),
+    voifinity_message_action:on_delivered(ClientId,Message),
     {ok, Message}.
 on_message_dropped(_By, #message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     ok;
 on_message_dropped(#{node := Node}, Message, _Env) ->
-    % io:format("Message dropped by node ~s: ~s~n~n~n~p~n", [Node, emqx_message:format(Message),Message]);
+    %io:format("Message dropped by node ~s: ~s~n~n~n~p~n", [Node, emqx_message:format(Message),Message]),
     voifinity_message_action:store(Message);
 on_message_dropped(#{client_id := ClientId}, Message, _Env) ->
-    io:format("Message dropped by client ~s: ~s~n", [ClientId, emqx_message:format(Message)]).
+    io:format("Message dropped by client ~s: ~s~n", [ClientId, emqx_message:format(Message)]),
+    voifinity_message_action:store(Message).
 %% Called when the plugin application stop
 unload() ->
     emqx:unhook('client.connected', fun ?MODULE:on_client_connected/4),
